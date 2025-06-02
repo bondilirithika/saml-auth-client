@@ -1,7 +1,7 @@
 // src/components/Profile.js
 import React, { useState, useEffect } from 'react';
-import AuthService from '../services/AuthService';
 import { useNavigate } from 'react-router-dom';
+import AuthService from '../services/AuthService';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -19,6 +19,10 @@ const Profile = () => {
     setLoading(false);
   }, [navigate]);
 
+  const handleLogout = () => {
+    AuthService.logout();
+  };
+
   if (loading) {
     return (
       <div className="container mt-5 text-center">
@@ -32,8 +36,14 @@ const Profile = () => {
   return (
     <div className="container mt-5">
       <div className="card">
-        <div className="card-header bg-primary text-white">
+        <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center">
           <h3 className="mb-0">User Profile</h3>
+          <button 
+            className="btn btn-sm btn-light" 
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
         </div>
         <div className="card-body">
           <div className="mb-4">

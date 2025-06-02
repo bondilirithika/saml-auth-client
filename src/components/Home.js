@@ -6,29 +6,38 @@ import AuthService from '../services/AuthService';
 const Home = () => {
   const isAuthenticated = AuthService.isAuthenticated();
   
+  const handleLogout = () => {
+    AuthService.logout();
+  };
+  
   return (
     <div className="container mt-5">
-      <div className="jumbotron bg-light p-5 rounded">
-        <h1>Welcome to SAML Auth Demo</h1>
+      <div className="jumbotron">
+        <h1 className="display-4">Welcome to SAML Auth Demo</h1>
         <p className="lead">
-          This application demonstrates SAML authentication with Google Workspace 
-          using a central authentication service.
+          This application demonstrates SAML-based authentication with Google Workspace.
         </p>
         <hr className="my-4" />
         <p>
-          {isAuthenticated 
-            ? "You are currently logged in. View your profile to see your details."
-            : "You are not logged in. Click the login button to authenticate with Google."}
+          Click the button below to authenticate with your Google Workspace account.
         </p>
-        <div className="mt-4">
-          {isAuthenticated ? (
-            <Link to="/profile" className="btn btn-primary btn-lg">
-              View Profile
-            </Link>
-          ) : (
+        <div className="d-flex gap-2">
+          {!isAuthenticated ? (
             <Link to="/login" className="btn btn-primary btn-lg">
               Login with Google
             </Link>
+          ) : (
+            <>
+              <Link to="/profile" className="btn btn-success btn-lg">
+                View Profile
+              </Link>
+              <button 
+                className="btn btn-outline-danger btn-lg" 
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </>
           )}
         </div>
       </div>

@@ -28,6 +28,7 @@ class AuthService {
     authUrl.searchParams.append('state', state);
     authUrl.searchParams.append('redirect_uri', REDIRECT_URI);
     authUrl.searchParams.append('apiKey', API_KEY);
+    authUrl.searchParams.append('code', 'authorization_code'); // Add this line
     
     // Log and redirect to SAML auth service
     console.log("Authentication initiated, redirecting to:", authUrl.toString());
@@ -127,11 +128,44 @@ class AuthService {
   }
   
   /**
-   * Logs out the user by removing auth token and redirecting to home
+   * Logs out the user by removing auth token and triggering backend logout
+   * This implements proper SAML Single Logout (SLO)
    */
-  logout() {
-    localStorage.removeItem('auth_token');
-    window.location.href = '/';
+  async logout() {
+    try {
+      const token = this.getAuthToken();
+      
+      // First, notify backend about logout to invalidate the token/session
+      if (token) {
+        await axios.post(
+          `${API_URL}/logout`, 
+          { token },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'X-API-KEY': API_KEY
+            }
+          }
+        );
+      }
+      
+      // Clear local storage
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('auth_state');
+      
+      // Optional: For complete SSO logout, redirect to Google
+      // Uncomment the next line if you want to logout from Google as well
+      // window.location.href = "https://accounts.google.com/logout";
+      
+      // Or just redirect to home page for local logout only
+      window.location.href = '/';
+    } catch (error) {
+      console.warn('Error during backend logout:', error);
+      // Continue with local logout even if backend logout fails
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('auth_state');
+      window.location.href = '/';
+    }
   }
   
   /**
