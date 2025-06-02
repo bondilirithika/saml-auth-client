@@ -4,13 +4,23 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
-// Import components directly, no destructuring
+// Import components directly with correct paths
 import Header from './components/Header';
 import Home from './components/Home';
 import Login from './components/Login';
 import Callback from './components/Callback';
 import Profile from './components/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
+
+// Add logging to check component imports
+console.log("Component types:", {
+  Header: typeof Header,
+  Home: typeof Home, 
+  Login: typeof Login,
+  Callback: typeof Callback,
+  Profile: typeof Profile,
+  ProtectedRoute: typeof ProtectedRoute
+});
 
 function App() {
   return (
